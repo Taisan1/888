@@ -394,7 +394,7 @@ export function EmployeesList() {
         </Card>
 
         {/* Список */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
           {filteredEmployees.map((employee) => (
             <Card key={employee.id} className="hover:shadow-lg transition-all duration-200">
               <CardContent className="p-6">
@@ -402,31 +402,34 @@ export function EmployeesList() {
                   <img
                     src={employee.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop'}
                     alt={employee.name}
-                    className="w-16 h-16 rounded-full object-cover"
+                    className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-lg font-semibold text-gray-900">{employee.name}</h3>
+                        <h3 className="text-base md:text-lg font-semibold text-gray-900 truncate">{employee.name}</h3>
                         <p className="text-gray-600">{employee.position || 'Не указана'}</p>
                         <p className="text-sm text-gray-500">{employee.department || 'Не указан'}</p>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleColor(employee.role)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${getRoleColor(employee.role)}`}>
                         {getRoleLabel(employee.role)}
                       </span>
                     </div>
                     <div className="mt-3 space-y-2">
                       <div className="flex items-center text-sm text-gray-600">
-                        <Mail className="h-4 w-4 mr-2" />{employee.email}
+                        <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
+                        <span className="truncate">{employee.email}</span>
                       </div>
                       {employee.phone && (
                         <div className="flex items-center text-sm text-gray-600">
-                          <Phone className="h-4 w-4 mr-2" />{employee.phone}
+                          <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
+                          <span className="truncate">{employee.phone}</span>
                         </div>
                       )}
                       {employee.telegram && (
                         <div className="flex items-center text-sm text-gray-600">
-                          <MessageCircle className="h-4 w-4 mr-2" />{employee.telegram}
+                          <MessageCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                          <span className="truncate">{employee.telegram}</span>
                         </div>
                       )}
                       <div className="flex items-center justify-between text-sm">
@@ -440,7 +443,7 @@ export function EmployeesList() {
                         )}
                       </div>
                     </div>
-                    <div className="mt-4 flex space-x-2">
+                    <div className="mt-4 flex flex-wrap gap-2">
                       <Button size="sm" variant="outline" onClick={() => handleContact(employee)}>
                         <Phone className="h-4 w-4 mr-1" />Контакты
                       </Button>
@@ -473,7 +476,8 @@ export function EmployeesList() {
                         }}
                       >
                         <MessageCircle className="h-4 w-4 mr-1" />
-                        Написать в чате
+                        <span className="hidden sm:inline">Написать в чате</span>
+                        <span className="sm:hidden">Чат</span>
                       </Button>
                     </div>
                   </div>

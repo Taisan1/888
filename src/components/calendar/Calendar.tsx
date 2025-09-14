@@ -13,6 +13,7 @@ interface CalendarEvent {
   createdBy: string;
   createdByName: string;
   type: 'meeting' | 'photoshoot' | 'design' | 'deadline' | 'other';
+  isNote?: boolean; // Новое поле для заметок
 }
 
 export function Calendar() {
@@ -20,6 +21,7 @@ export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
+  const [showNoteModal, setShowNoteModal] = useState(false);
   
   // Функция для проверки участия пользователя в проекте
   const isUserInProject = (project: any): boolean => {
@@ -51,7 +53,8 @@ export function Calendar() {
     time: '23:59',
     createdBy: project.manager?.id || 'system',
     createdByName: project.manager?.name || 'Система',
-    type: 'deadline'
+    type: 'deadline',
+    isNote: false
   }));
 
   // Персональные события пользователя
@@ -88,7 +91,14 @@ export function Calendar() {
     title: '',
     description: '',
     time: '09:00',
-    type: 'other' as CalendarEvent['type']
+    type: 'other' as CalendarEvent['type'],
+    isNote: false
+  });
+
+  const [newNote, setNewNote] = useState({
+    title: '',
+    content: '',
+    time: '09:00'
   });
 
   const monthNames = [
@@ -175,15 +185,39 @@ export function Calendar() {
       time: newEvent.time,
       createdBy: user?.id || '',
       createdByName: user?.name || '',
-      type: newEvent.type
+      type: newEvent.type,
+      isNote: newEvent.isNote
     };
 
     setCustomEvents(prev => [...prev, event]);
     // Сохраняем в localStorage
     const updatedEvents = [...customEvents, event];
     localStorage.setItem('calendar_events', JSON.stringify(updatedEvents));
-    setNewEvent({ title: '', description: '', time: '09:00', type: 'other' });
+    setNewEvent({ title: '', description: '', time: '09:00', type: 'other', isNote: false });
     setShowEventModal(false);
+  };
+
+  const handleAddNote = () => {
+    if (!selectedDate || !newNote.title.trim()) return;
+
+    const note: CalendarEvent = {
+      id: Math.random().toString(36).substr(2, 9),
+      title: newNote.title,
+      description: newNote.content,
+      date: selectedDate,
+      time: newNote.time,
+      createdBy: user?.id || '',
+      createdByName: user?.name || '',
+      type: 'other',
+      isNote: true
+    };
+
+    setCustomEvents(prev => [...prev, note]);
+    // Сохраняем в localStorage
+    const updatedEvents = [...customEvents, note];
+    localStorage.setItem('calendar_events', JSON.stringify(updatedEvents));
+    setNewNote({ title: '', content: '', time: '09:00' });
+    setShowNoteModal(false);
   };
 
   const handleDeleteEvent = (eventId: string) => {
@@ -210,21 +244,31 @@ export function Calendar() {
             Планирование проектов и событий
           </p>
         </div>
-        {selectedDate && (
-          <Button onClick={() => setShowEventModal(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Добавить событие
-          </Button>
-        )}
+        <div className="flex flex-col sm:flex-row gap-2">
+          {selectedDate && (
+            <>
+              <Button onClick={() => setShowNoteModal(true)} variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Добавить заметку</span>
+                <span className="sm:hidden">Заметка</span>
+              </Button>
+              <Button onClick={() => setShowEventModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                <span className="hidden sm:inline">Добавить событие</span>
+                <span className="sm:hidden">Событие</span>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
         {/* Calendar */}
-        <div className="lg:col-span-2">
-          <Card>
+        <div className="flex-1 lg:flex-none lg:w-2/3">
+          <Card className="h-full">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>
+                <CardTitle className="text-lg sm:text-xl">
                   {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                 </CardTitle>
                 <div className="flex space-x-2">
@@ -237,10 +281,10 @@ export function Calendar() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-2 sm:p-6">
               <div className="grid grid-cols-7 gap-1 mb-4">
                 {weekDays.map(day => (
-                  <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
+                  <div key={day} className="p-1 sm:p-2 text-center text-xs sm:text-sm font-medium text-gray-500">
                     {day}
                   </div>
                 ))}
@@ -248,7 +292,7 @@ export function Calendar() {
               <div className="grid grid-cols-7 gap-1">
                 {days.map((day, index) => {
                   if (day === null) {
-                    return <div key={index} className="p-2 h-20"></div>;
+                    return <div key={index} className="p-1 sm:p-2 h-16 sm:h-20"></div>;
                   }
 
                   const dateString = formatDate(currentDate.getFullYear(), currentDate.getMonth(), day);
@@ -260,20 +304,23 @@ export function Calendar() {
                     <div
                       key={day}
                       onClick={() => handleDateClick(day)}
-                      className={`p-2 h-20 border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
+                      className={`p-1 sm:p-2 h-16 sm:h-20 border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
                         isSelected ? 'bg-blue-50 border-blue-300' : ''
                       } ${isToday ? 'bg-yellow-50 border-yellow-300' : ''}`}
                     >
-                      <div className={`text-sm font-medium ${isToday ? 'text-yellow-800' : 'text-gray-900'}`}>
+                      <div className={`text-xs sm:text-sm font-medium ${isToday ? 'text-yellow-800' : 'text-gray-900'}`}>
                         {day}
                       </div>
                       <div className="mt-1 space-y-1">
                         {dayEvents.slice(0, 2).map(event => (
                           <div
                             key={event.id}
-                            className={`text-xs px-1 py-0.5 rounded truncate ${getEventTypeColor(event.type)}`}
+                            className={`text-xs px-1 py-0.5 rounded truncate ${getEventTypeColor(event.type)} ${
+                              event.isNote ? 'border-l-2 border-purple-400' : ''
+                            }`}
+                            title={event.isNote ? `Заметка: ${event.title}` : event.title}
                           >
-                            {event.title}
+                            {event.isNote && '📝 '}{event.title}
                           </div>
                         ))}
                         {dayEvents.length > 2 && (
@@ -291,42 +338,59 @@ export function Calendar() {
         </div>
 
         {/* Events for selected date */}
-        <div>
-          <Card>
+        <div className="flex-1 lg:w-1/3 mt-4 lg:mt-0 lg:ml-6">
+          <Card className="h-full">
             <CardHeader>
-              <CardTitle>
+              <CardTitle className="text-lg">
                 {selectedDate 
                   ? `События на ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('ru-RU')}`
                   : 'Выберите дату'
                 }
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="overflow-y-auto">
               {selectedDate ? (
                 <div className="space-y-4">
                   {selectedDateEvents.length === 0 ? (
                     <div className="text-center py-8">
                       <CalendarIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500">Нет событий на эту дату</p>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="mt-3"
-                        onClick={() => setShowEventModal(true)}
-                      >
-                        <Plus className="h-4 w-4 mr-1" />
-                        Добавить событие
-                      </Button>
+                      <p className="text-gray-500 mb-3">Нет событий на эту дату</p>
+                      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setShowNoteModal(true)}
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Заметка
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={() => setShowEventModal(true)}
+                        >
+                          <Plus className="h-4 w-4 mr-1" />
+                          Событие
+                        </Button>
+                      </div>
                     </div>
                   ) : (
                     selectedDateEvents.map(event => (
-                      <div key={event.id} className="border border-gray-200 rounded-lg p-4">
+                      <div key={event.id} className={`border rounded-lg p-4 ${
+                        event.isNote ? 'border-purple-200 bg-purple-50' : 'border-gray-200'
+                      }`}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-2">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEventTypeColor(event.type)}`}>
-                                {getEventTypeLabel(event.type)}
-                              </span>
+                              {event.isNote ? (
+                                <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                  📝 Заметка
+                                </span>
+                              ) : (
+                                <span className={`px-2 py-1 rounded-full text-xs font-medium ${getEventTypeColor(event.type)}`}>
+                                  {getEventTypeLabel(event.type)}
+                                </span>
+                              )}
                               <div className="flex items-center text-sm text-gray-500">
                                 <Clock className="h-3 w-3 mr-1" />
                                 {event.time}
@@ -334,7 +398,7 @@ export function Calendar() {
                             </div>
                             <h4 className="font-medium text-gray-900 mb-1">{event.title}</h4>
                             {event.description && (
-                              <p className="text-sm text-gray-600 mb-2">{event.description}</p>
+                              <p className="text-sm text-gray-600 mb-2 whitespace-pre-wrap">{event.description}</p>
                             )}
                             <div className="flex items-center text-xs text-gray-500">
                               <User className="h-3 w-3 mr-1" />
@@ -344,13 +408,13 @@ export function Calendar() {
                           {(user?.role === 'admin' || user?.id === event.createdBy) && !event.id.startsWith('project-') && (
                             <button
                               onClick={() => handleDeleteEvent(event.id)}
-                              className="text-gray-400 hover:text-red-500 transition-colors"
+                              className="text-gray-400 hover:text-red-500 transition-colors ml-2"
                             >
                               <X className="h-4 w-4" />
                             </button>
                           )}
                           {event.id.startsWith('project-') && (
-                            <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
+                            <div className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded ml-2">
                               Проект
                             </div>
                           )}
@@ -370,10 +434,79 @@ export function Calendar() {
         </div>
       </div>
 
+      {/* Add Note Modal */}
+      {showNoteModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-auto">
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-xl font-semibold text-gray-900">Добавить заметку</h2>
+              <button
+                onClick={() => setShowNoteModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Заголовок заметки *
+                </label>
+                <input
+                  type="text"
+                  value={newNote.title}
+                  onChange={(e) => setNewNote(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  placeholder="Введите заголовок заметки"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Содержание заметки
+                </label>
+                <textarea
+                  value={newNote.content}
+                  onChange={(e) => setNewNote(prev => ({ ...prev, content: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  rows={4}
+                  placeholder="Напишите содержание заметки"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Время
+                </label>
+                <input
+                  type="time"
+                  value={newNote.time}
+                  onChange={(e) => setNewNote(prev => ({ ...prev, time: e.target.value }))}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+
+              <div className="flex justify-end space-x-3 pt-4">
+                <Button variant="outline" onClick={() => setShowNoteModal(false)}>
+                  Отмена
+                </Button>
+                <Button 
+                  onClick={handleAddNote} 
+                  disabled={!newNote.title.trim()}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  Добавить заметку
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Add Event Modal */}
       {showEventModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-md w-full">
+          <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-900">Добавить событие</h2>
               <button

@@ -22,6 +22,7 @@ interface SidebarProps {
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const { user } = useAuth();
+  const [isCollapsed, setIsCollapsed] = useState(false);
   
   // Проверяем наличие непрочитанных сообщений
   const getUnreadMessagesCount = () => {
@@ -74,16 +75,30 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   };
 
   return (
-    <div className="bg-white border-r border-gray-200 w-64 h-full flex flex-col">
+    <div className={`bg-white border-r border-gray-200 h-full flex flex-col transition-all duration-300 ${
+      isCollapsed ? 'w-16' : 'w-64'
+    } md:w-64`}>
+      {/* Mobile toggle button */}
+      <button
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className="md:hidden absolute top-4 right-4 z-10 p-2 bg-white rounded-lg shadow-md border border-gray-200"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
       <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
           <div className="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center">
             <Camera className="h-6 w-6 text-white" />
           </div>
-          <div>
+          {!isCollapsed && (
+          <div className="hidden md:block">
             <h1 className="text-xl font-bold text-gray-900">PhotoAlbums</h1>
             <p className="text-sm text-gray-500">Управление проектами</p>
           </div>
+          )}
         </div>
       </div>
 
@@ -107,9 +122,11 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                   disabled={user?.role !== 'admin' && item.id === 'add-employee'}
                 >
                   <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
+                  {!isCollapsed && <span className="font-medium hidden md:inline">{item.label}</span>}
                   {item.badge && item.badge > 0 && (
-                    <span className="bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                    <span className={`bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center ${
+                      isCollapsed ? 'absolute -top-1 -right-1' : ''
+                    }`}>
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   )}
@@ -121,16 +138,18 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       </nav>
 
       <div className="p-4 border-t border-gray-200">
-        <div className="flex items-center space-x-3">
+        <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-3'}`}>
           <img
             src={user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'}
             alt={user?.name}
             className="w-10 h-10 rounded-full object-cover"
           />
-          <div className="flex-1 min-w-0">
+          {!isCollapsed && (
+          <div className="flex-1 min-w-0 hidden md:block">
             <p className="font-medium text-gray-900 truncate">{user?.name}</p>
             <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
           </div>
+          )}
         </div>
       </div>
     </div>

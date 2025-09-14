@@ -228,7 +228,7 @@ export function Dashboard() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="flex items-center p-3 bg-blue-50 rounded-lg">
               <FolderOpen className="h-8 w-8 text-blue-600 mr-3" />
               <div>
@@ -288,7 +288,7 @@ export function Dashboard() {
             <p className="text-gray-600 mb-4">
               Если у вас остались вопросы по работе с системой, обратитесь к администратору
             </p>
-            <div className="flex items-center justify-center space-x-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 text-gray-500 mr-2" />
                 <span className="text-sm text-gray-600">admin@photoalbums.com</span>

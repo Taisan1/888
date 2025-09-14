@@ -5,11 +5,21 @@ import { Button } from '../ui/Button';
 
 export function Header() {
   const { user, logout } = useAuth();
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 py-4">
       <div className="flex items-center justify-between">
-        <div className="flex-1 max-w-lg">
+        {/* Mobile search toggle */}
+        <button
+          onClick={() => setShowMobileSearch(!showMobileSearch)}
+          className="md:hidden p-2 text-gray-400 hover:text-gray-600"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+
+        {/* Desktop search */}
+        <div className="hidden md:flex flex-1 max-w-lg">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
@@ -21,7 +31,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-3">
+          <div className="hidden sm:flex items-center space-x-3">
             <img
               src={user?.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=40&h=40&fit=crop'}
               alt={user?.name}
@@ -43,6 +53,20 @@ export function Header() {
           </Button>
         </div>
       </div>
+
+      {/* Mobile search bar */}
+      {showMobileSearch && (
+        <div className="md:hidden mt-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Поиск..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        </div>
+      )}
     </header>
   );
 }

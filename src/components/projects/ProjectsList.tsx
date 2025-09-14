@@ -359,7 +359,7 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
       </Card>
 
       {/* Список проектов */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {filteredProjects.map((project) => {
           const statusInfo = getStatusInfo(project.status);
           const StatusIcon = statusInfo.icon;
@@ -378,7 +378,7 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center space-x-2 mb-2">
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
+                      <CardTitle className="text-base md:text-lg truncate">{project.title}</CardTitle>
                       {!canInteractWithProject(project) && (
                         <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
                           Только просмотр
@@ -386,11 +386,11 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                       )}
                     </div>
                     <p className="text-sm font-medium text-blue-600 mb-1">{project.albumType}</p>
-                    <p className="text-gray-600 text-sm">{project.description}</p>
+                    <p className="text-gray-600 text-sm line-clamp-2">{project.description}</p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium flex items-center ${statusInfo.color}`}>
+                  <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-medium flex items-center flex-shrink-0 ml-2 ${statusInfo.color}`}>
                     <StatusIcon className="h-3 w-3 mr-1" />
-                    {statusInfo.label}
+                    <span className="hidden sm:inline">{statusInfo.label}</span>
                   </span>
                 </div>
               </CardHeader>
@@ -402,12 +402,12 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                     <div className="flex items-center space-x-1">
                       <User className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-500">Менеджер:</span>
-                      <span className="text-gray-600">{project.manager?.name || 'Не назначен'}</span>
+                      <span className="text-gray-600 truncate">{project.manager?.name || 'Не назначен'}</span>
                     </div>
                     <div className="flex items-center space-x-1">
                       <Camera className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-500">Фотографы:</span>
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 truncate">
                         {project.photographers.length > 0 
                           ? project.photographers.map(p => p.name).join(', ')
                           : 'Не назначены'
@@ -417,7 +417,7 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                     <div className="flex items-center space-x-1">
                       <Palette className="h-4 w-4 text-gray-400" />
                       <span className="text-gray-500">Дизайнеры:</span>
-                      <span className="text-gray-600">
+                      <span className="text-gray-600 truncate">
                         {project.designers.length > 0 
                           ? project.designers.map(d => d.name).join(', ')
                           : 'Не назначены'
@@ -428,19 +428,19 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
 
                   {/* Статистика и даты */}
                   <div className="space-y-2 text-sm">
-                    <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-between">
                       <span className="text-gray-600">Фото: {project.files.filter(f => f.type.startsWith('image/')).length}</span>
                       <span className="text-gray-600">Макеты: {project.files.filter(f => f.type.includes('design') || f.name.toLowerCase().includes('макет') || f.name.toLowerCase().includes('design')).length}</span>
                       <span className="text-gray-600">Файлов: {project.files.length}</span>
                     </div>
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                       <div className="flex items-center space-x-1 text-gray-500">
                         <Calendar className="h-4 w-4" />
-                        <span>Создан: {project.createdAt.toLocaleDateString('ru-RU')}</span>
+                        <span className="text-xs">Создан: {project.createdAt.toLocaleDateString('ru-RU')}</span>
                       </div>
                       <div className="flex items-center space-x-1 text-gray-500">
                         <Calendar className="h-4 w-4" />
-                        <span>Дедлайн: {project.deadline.toLocaleDateString('ru-RU')}</span>
+                        <span className="text-xs">Дедлайн: {project.deadline.toLocaleDateString('ru-RU')}</span>
                       </div>
                     </div>
                   </div>
