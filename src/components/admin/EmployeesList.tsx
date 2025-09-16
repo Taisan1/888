@@ -353,19 +353,23 @@ export function EmployeesList() {
 
   return (
     <>
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Сотрудники</h1>
-            <p className="text-gray-600 mt-1">Управление сотрудниками компании</p>
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Сотрудники</h1>
+            <p className="text-sm md:text-base text-gray-600 mt-1">Управление сотрудниками компании</p>
           </div>
-          <Button><Users className="h-4 w-4 mr-2" />Экспорт списка</Button>
+          <Button size="sm" className="md:text-base">
+            <Users className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Экспорт списка</span>
+            <span className="sm:hidden">Экспорт</span>
+          </Button>
         </div>
 
         {/* Фильтры */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
@@ -373,15 +377,15 @@ export function EmployeesList() {
                   placeholder="Поиск сотрудников..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 sm:flex-shrink-0">
                 <Filter className="h-4 w-4 text-gray-500" />
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="all">Все роли</option>
                   <option value="photographer">Фотографы</option>
@@ -394,24 +398,24 @@ export function EmployeesList() {
         </Card>
 
         {/* Список */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
           {filteredEmployees.map((employee) => (
             <Card key={employee.id} className="hover:shadow-lg transition-all duration-200">
-              <CardContent className="p-6">
+              <CardContent className="p-4 md:p-6">
                 <div className="flex items-start space-x-4">
                   <img
                     src={employee.avatar || 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=60&h=60&fit=crop'}
                     alt={employee.name}
-                    className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover flex-shrink-0"
+                    className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full object-cover flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-base md:text-lg font-semibold text-gray-900 truncate">{employee.name}</h3>
-                        <p className="text-gray-600">{employee.position || 'Не указана'}</p>
+                        <h3 className="text-sm sm:text-base md:text-lg font-semibold text-gray-900 truncate">{employee.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600">{employee.position || 'Не указана'}</p>
                         <p className="text-sm text-gray-500">{employee.department || 'Не указан'}</p>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${getRoleColor(employee.role)}`}>
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium flex-shrink-0 ml-2 whitespace-nowrap ${getRoleColor(employee.role)}`}>
                         {getRoleLabel(employee.role)}
                       </span>
                     </div>
@@ -434,7 +438,9 @@ export function EmployeesList() {
                       )}
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-gray-600">
-                          Дата найма: {employee.createdAt.toLocaleDateString('ru-RU')}
+                          <span className="hidden sm:inline">Дата найма: </span>
+                          <span className="sm:hidden">Найм: </span>
+                          {employee.createdAt.toLocaleDateString('ru-RU')}
                         </span>
                         {employee.salary && (
                           <span className="font-medium text-gray-900">
@@ -443,14 +449,17 @@ export function EmployeesList() {
                         )}
                       </div>
                     </div>
-                    <div className="mt-4 flex flex-wrap gap-2">
+                    <div className="mt-3 md:mt-4 flex flex-wrap gap-1 md:gap-2">
                       <Button size="sm" variant="outline" onClick={() => handleContact(employee)}>
-                        <Phone className="h-4 w-4 mr-1" />Контакты
+                        <Phone className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                        <span className="text-xs md:text-sm">Контакты</span>
                       </Button>
                       {user?.role === 'admin' && (
                         <>
                           <Button size="sm" variant="outline" onClick={() => handleEdit(employee)}>
-                            <Edit className="h-4 w-4 mr-1" />Редактировать
+                            <Edit className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                            <span className="hidden sm:inline text-xs md:text-sm">Редактировать</span>
+                            <span className="sm:hidden text-xs">Ред.</span>
                           </Button>
                           <Button
                             size="sm"
@@ -458,8 +467,10 @@ export function EmployeesList() {
                             className={`${deleteConfirm === employee.id ? 'bg-red-500 text-white hover:bg-red-600' : 'text-red-600 hover:text-red-700'}`}
                             onClick={() => handleDelete(employee.id)}
                           >
-                            <Trash2 className="h-4 w-4 mr-1" />
-                            {deleteConfirm === employee.id ? 'Подтвердить' : 'Удалить'}
+                            <Trash2 className="h-3 w-3 md:h-4 md:w-4 mr-1" />
+                            <span className="text-xs md:text-sm">
+                              {deleteConfirm === employee.id ? 'Подтвердить' : 'Удалить'}
+                            </span>
                           </Button>
                         </>
                       )}
@@ -475,9 +486,9 @@ export function EmployeesList() {
                           window.dispatchEvent(event);
                         }}
                       >
-                        <MessageCircle className="h-4 w-4 mr-1" />
+                        <MessageCircle className="h-3 w-3 md:h-4 md:w-4 mr-1" />
                         <span className="hidden sm:inline">Написать в чате</span>
-                        <span className="sm:hidden">Чат</span>
+                        <span className="sm:hidden text-xs">Чат</span>
                       </Button>
                     </div>
                   </div>

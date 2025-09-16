@@ -159,10 +159,10 @@ export function Dashboard() {
   const roleGuide = getRoleSpecificGuide();
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{getWelcomeMessage()}</h1>
-        <p className="text-gray-600">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">{getWelcomeMessage()}</h1>
+        <p className="text-sm md:text-base text-gray-600">
           Добро пожаловать в корпоративную платформу управления фотоальбомами
         </p>
       </div>
@@ -170,21 +170,21 @@ export function Dashboard() {
       {/* Role-specific guide */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-lg md:text-xl">
             <Camera className="h-6 w-6 mr-2 text-blue-600" />
             {roleGuide.title}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {roleGuide.sections.map((section, index) => (
               <div key={index}>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">{section.title}</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-900 mb-3">{section.title}</h3>
                 <ul className="space-y-2">
                   {section.items.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex items-start">
                       <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                      <span className="text-gray-700">{item}</span>
+                      <span className="text-sm md:text-base text-gray-700">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -198,7 +198,7 @@ export function Dashboard() {
       {commonSections.map((section, index) => (
         <Card key={index}>
           <CardHeader>
-            <CardTitle className="flex items-center">
+            <CardTitle className="flex items-center text-lg md:text-xl">
               {index === 0 && <Users className="h-5 w-5 mr-2 text-green-600" />}
               {index === 1 && <Calendar className="h-5 w-5 mr-2 text-purple-600" />}
               {index === 2 && <MessageCircle className="h-5 w-5 mr-2 text-orange-600" />}
@@ -211,7 +211,7 @@ export function Dashboard() {
               {section.items.map((item, itemIndex) => (
                 <li key={itemIndex} className="flex items-start">
                   <div className="w-2 h-2 bg-gray-400 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                  <span className="text-gray-700">{item}</span>
+                  <span className="text-sm md:text-base text-gray-700">{item}</span>
                 </li>
               ))}
             </ul>
@@ -222,53 +222,53 @@ export function Dashboard() {
       {/* Quick navigation */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-lg md:text-xl">
             <FolderOpen className="h-5 w-5 mr-2 text-blue-600" />
             Быстрая навигация
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
             <div className="flex items-center p-3 bg-blue-50 rounded-lg">
-              <FolderOpen className="h-8 w-8 text-blue-600 mr-3" />
+              <FolderOpen className="h-6 w-6 md:h-8 md:w-8 text-blue-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Проекты</h4>
-                <p className="text-sm text-gray-600">Управление проектами</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Проекты</h4>
+                <p className="text-xs md:text-sm text-gray-600">Управление проектами</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-green-50 rounded-lg">
-              <Users className="h-8 w-8 text-green-600 mr-3" />
+              <Users className="h-6 w-6 md:h-8 md:w-8 text-green-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Сотрудники</h4>
-                <p className="text-sm text-gray-600">Контакты коллег</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Сотрудники</h4>
+                <p className="text-xs md:text-sm text-gray-600">Контакты коллег</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-purple-50 rounded-lg">
-              <Calendar className="h-8 w-8 text-purple-600 mr-3" />
+              <Calendar className="h-6 w-6 md:h-8 md:w-8 text-purple-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Календарь</h4>
-                <p className="text-sm text-gray-600">Планирование событий</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Календарь</h4>
+                <p className="text-xs md:text-sm text-gray-600">Планирование событий</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-yellow-50 rounded-lg">
-              <DollarSign className="h-8 w-8 text-yellow-600 mr-3" />
+              <DollarSign className="h-6 w-6 md:h-8 md:w-8 text-yellow-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Зарплаты</h4>
-                <p className="text-sm text-gray-600">Информация о выплатах</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Зарплаты</h4>
+                <p className="text-xs md:text-sm text-gray-600">Информация о выплатах</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-indigo-50 rounded-lg">
-              <Upload className="h-8 w-8 text-indigo-600 mr-3" />
+              <Upload className="h-6 w-6 md:h-8 md:w-8 text-indigo-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Загрузка</h4>
-                <p className="text-sm text-gray-600">Файлы и материалы</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Загрузка</h4>
+                <p className="text-xs md:text-sm text-gray-600">Файлы и материалы</p>
               </div>
             </div>
             <div className="flex items-center p-3 bg-red-50 rounded-lg">
-              <MessageCircle className="h-8 w-8 text-red-600 mr-3" />
+              <MessageCircle className="h-6 w-6 md:h-8 md:w-8 text-red-600 mr-3 flex-shrink-0" />
               <div>
-                <h4 className="font-medium text-gray-900">Скрипт</h4>
-                <p className="text-sm text-gray-600">Общение с клиентами</p>
+                <h4 className="font-medium text-gray-900 text-sm md:text-base">Скрипт</h4>
+                <p className="text-xs md:text-sm text-gray-600">Общение с клиентами</p>
               </div>
             </div>
           </div>
@@ -278,17 +278,17 @@ export function Dashboard() {
       {/* Support */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-lg md:text-xl">
             <Phone className="h-5 w-5 mr-2 text-green-600" />
             Нужна помощь?
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center">
-            <p className="text-gray-600 mb-4">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
               Если у вас остались вопросы по работе с системой, обратитесь к администратору
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <div className="flex items-center">
                 <Mail className="h-4 w-4 text-gray-500 mr-2" />
                 <span className="text-sm text-gray-600">admin@photoalbums.com</span>

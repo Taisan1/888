@@ -312,24 +312,25 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Проекты</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Проекты</h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1">
             Управляйте вашими проектами фотоальбомов
           </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)}>
+        <Button onClick={() => setShowCreateModal(true)} size="sm" className="md:text-base">
             <Plus className="h-4 w-4 mr-2" />
-            Создать проект
+            <span className="hidden sm:inline">Создать проект</span>
+            <span className="sm:hidden">Создать</span>
           </Button>
       </div>
 
       {/* Фильтры и поиск */}
       <Card>
         <CardContent className="p-4">
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
@@ -337,15 +338,15 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                 placeholder="Поиск проектов..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 sm:flex-shrink-0">
               <Filter className="h-4 w-4 text-gray-500" />
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="all">Все статусы</option>
                 <option value="planning">Планирование</option>
@@ -359,7 +360,7 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
       </Card>
 
       {/* Список проектов */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
         {filteredProjects.map((project) => {
           const statusInfo = getStatusInfo(project.status);
           const StatusIcon = statusInfo.icon;
