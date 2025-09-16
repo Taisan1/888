@@ -236,39 +236,39 @@ export function Calendar() {
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-4 md:space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Календарь</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Календарь</h1>
+          <p className="text-sm md:text-base text-gray-600 mt-1">
             Планирование проектов и событий
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col xs:flex-row gap-2">
           {selectedDate && (
             <>
-              <Button onClick={() => setShowNoteModal(true)} variant="outline">
+              <Button onClick={() => setShowNoteModal(true)} variant="outline" size="sm">
                 <Plus className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Добавить заметку</span>
-                <span className="sm:hidden">Заметка</span>
+                <span className="hidden xs:inline">Добавить заметку</span>
+                <span className="xs:hidden">Заметка</span>
               </Button>
-              <Button onClick={() => setShowEventModal(true)}>
+              <Button onClick={() => setShowEventModal(true)} size="sm">
                 <Plus className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">Добавить событие</span>
-                <span className="sm:hidden">Событие</span>
+                <span className="hidden xs:inline">Добавить событие</span>
+                <span className="xs:hidden">Событие</span>
               </Button>
             </>
           )}
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
+      <div className="flex flex-col lg:flex-row gap-4 lg:gap-6 overflow-hidden">
         {/* Calendar */}
-        <div className="flex-1 lg:flex-none lg:w-2/3">
+        <div className="flex-1 lg:w-2/3">
           <Card className="h-full">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg sm:text-xl">
+                <CardTitle className="text-base sm:text-lg md:text-xl">
                   {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
                 </CardTitle>
                 <div className="flex space-x-2">
@@ -281,10 +281,10 @@ export function Calendar() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-2 sm:p-6">
-              <div className="grid grid-cols-7 gap-1 mb-4">
+            <CardContent className="p-3 sm:p-4 md:p-6">
+              <div className="grid grid-cols-7 gap-1 mb-2 md:mb-4">
                 {weekDays.map(day => (
-                  <div key={day} className="p-1 sm:p-2 text-center text-xs sm:text-sm font-medium text-gray-500">
+                  <div key={day} className="p-1 md:p-2 text-center text-xs font-medium text-gray-500">
                     {day}
                   </div>
                 ))}
@@ -292,7 +292,7 @@ export function Calendar() {
               <div className="grid grid-cols-7 gap-1">
                 {days.map((day, index) => {
                   if (day === null) {
-                    return <div key={index} className="p-1 sm:p-2 h-16 sm:h-20"></div>;
+                    return <div key={index} className="p-1 md:p-2 h-12 sm:h-16 md:h-20"></div>;
                   }
 
                   const dateString = formatDate(currentDate.getFullYear(), currentDate.getMonth(), day);
@@ -304,18 +304,18 @@ export function Calendar() {
                     <div
                       key={day}
                       onClick={() => handleDateClick(day)}
-                      className={`p-1 sm:p-2 h-16 sm:h-20 border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
+                      className={`p-1 md:p-2 h-12 sm:h-16 md:h-20 border border-gray-200 cursor-pointer hover:bg-gray-50 transition-colors ${
                         isSelected ? 'bg-blue-50 border-blue-300' : ''
                       } ${isToday ? 'bg-yellow-50 border-yellow-300' : ''}`}
                     >
-                      <div className={`text-xs sm:text-sm font-medium ${isToday ? 'text-yellow-800' : 'text-gray-900'}`}>
+                      <div className={`text-xs font-medium ${isToday ? 'text-yellow-800' : 'text-gray-900'}`}>
                         {day}
                       </div>
                       <div className="mt-1 space-y-1">
-                        {dayEvents.slice(0, 2).map(event => (
+                        {dayEvents.slice(0, window.innerWidth < 640 ? 1 : 2).map(event => (
                           <div
                             key={event.id}
-                            className={`text-xs px-1 py-0.5 rounded truncate ${getEventTypeColor(event.type)} ${
+                            className={`text-xs px-1 py-0.5 rounded truncate leading-tight ${getEventTypeColor(event.type)} ${
                               event.isNote ? 'border-l-2 border-purple-400' : ''
                             }`}
                             title={event.isNote ? `Заметка: ${event.title}` : event.title}
@@ -323,9 +323,9 @@ export function Calendar() {
                             {event.isNote && '📝 '}{event.title}
                           </div>
                         ))}
-                        {dayEvents.length > 2 && (
-                          <div className="text-xs text-gray-500">
-                            +{dayEvents.length - 2} еще
+                        {dayEvents.length > (window.innerWidth < 640 ? 1 : 2) && (
+                          <div className="text-xs text-gray-500 leading-tight">
+                            +{dayEvents.length - (window.innerWidth < 640 ? 1 : 2)} еще
                           </div>
                         )}
                       </div>
@@ -338,10 +338,10 @@ export function Calendar() {
         </div>
 
         {/* Events for selected date */}
-        <div className="flex-1 lg:w-1/3 mt-4 lg:mt-0 lg:ml-6">
+        <div className="flex-1 lg:w-1/3">
           <Card className="h-full">
             <CardHeader>
-              <CardTitle className="text-lg">
+              <CardTitle className="text-base md:text-lg">
                 {selectedDate 
                   ? `События на ${new Date(selectedDate + 'T00:00:00').toLocaleDateString('ru-RU')}`
                   : 'Выберите дату'
@@ -350,12 +350,12 @@ export function Calendar() {
             </CardHeader>
             <CardContent className="overflow-y-auto">
               {selectedDate ? (
-                <div className="space-y-4">
+                <div className="space-y-3 md:space-y-4">
                   {selectedDateEvents.length === 0 ? (
-                    <div className="text-center py-8">
-                      <CalendarIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-gray-500 mb-3">Нет событий на эту дату</p>
-                      <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <div className="text-center py-6 md:py-8">
+                      <CalendarIcon className="h-8 w-8 md:h-12 md:w-12 text-gray-300 mx-auto mb-3" />
+                      <p className="text-sm md:text-base text-gray-500 mb-3">Нет событий на эту дату</p>
+                      <div className="flex flex-col xs:flex-row gap-2 justify-center">
                         <Button 
                           variant="outline" 
                           size="sm" 
@@ -381,7 +381,7 @@ export function Calendar() {
                       }`}>
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
+                            <div className="flex flex-wrap items-center gap-2 mb-2">
                               {event.isNote ? (
                                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                   📝 Заметка
@@ -391,14 +391,14 @@ export function Calendar() {
                                   {getEventTypeLabel(event.type)}
                                 </span>
                               )}
-                              <div className="flex items-center text-sm text-gray-500">
+                              <div className="flex items-center text-xs md:text-sm text-gray-500">
                                 <Clock className="h-3 w-3 mr-1" />
                                 {event.time}
                               </div>
                             </div>
-                            <h4 className="font-medium text-gray-900 mb-1">{event.title}</h4>
+                            <h4 className="font-medium text-sm md:text-base text-gray-900 mb-1">{event.title}</h4>
                             {event.description && (
-                              <p className="text-sm text-gray-600 mb-2 whitespace-pre-wrap">{event.description}</p>
+                              <p className="text-xs md:text-sm text-gray-600 mb-2 whitespace-pre-wrap">{event.description}</p>
                             )}
                             <div className="flex items-center text-xs text-gray-500">
                               <User className="h-3 w-3 mr-1" />
@@ -424,9 +424,9 @@ export function Calendar() {
                   )}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <CalendarIcon className="h-12 w-12 text-gray-300 mx-auto mb-3" />
-                  <p className="text-gray-500">Выберите дату в календаре</p>
+                <div className="text-center py-6 md:py-8">
+                  <CalendarIcon className="h-8 w-8 md:h-12 md:w-12 text-gray-300 mx-auto mb-3" />
+                  <p className="text-sm md:text-base text-gray-500">Выберите дату в календаре</p>
                 </div>
               )}
             </CardContent>
